@@ -13,6 +13,7 @@ enum LivenessFailReason {
   noParallax,      // optical flow too uniform
   challengeFailed, // challenge-response not completed
   tooShort,        // video < 5 seconds
+  noDepthData,     // model failed to process any frames
 }
 
 // ── Input / Output Types ───────────────────────────────────────────────────
@@ -37,6 +38,7 @@ class LivenessResult with _$LivenessResult {
     required List<Float32List> flowVectors,
     required double depthVariance,
     required double flowMagnitude,
+    @Default(false) bool stationaryFlag,
   }) = LivenessPass;
 
   const factory LivenessResult.fail({

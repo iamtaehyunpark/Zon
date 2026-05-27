@@ -306,7 +306,8 @@ mixin _$LivenessResult {
             Float32List depthMap,
             List<Float32List> flowVectors,
             double depthVariance,
-            double flowMagnitude)
+            double flowMagnitude,
+            bool stationaryFlag)
         pass,
     required TResult Function(LivenessFailReason reason, String userMessage)
         fail,
@@ -315,7 +316,7 @@ mixin _$LivenessResult {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(Float32List depthMap, List<Float32List> flowVectors,
-            double depthVariance, double flowMagnitude)?
+            double depthVariance, double flowMagnitude, bool stationaryFlag)?
         pass,
     TResult? Function(LivenessFailReason reason, String userMessage)? fail,
   }) =>
@@ -323,7 +324,7 @@ mixin _$LivenessResult {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(Float32List depthMap, List<Float32List> flowVectors,
-            double depthVariance, double flowMagnitude)?
+            double depthVariance, double flowMagnitude, bool stationaryFlag)?
         pass,
     TResult Function(LivenessFailReason reason, String userMessage)? fail,
     required TResult orElse(),
@@ -381,7 +382,8 @@ abstract class _$$LivenessPassImplCopyWith<$Res> {
       {Float32List depthMap,
       List<Float32List> flowVectors,
       double depthVariance,
-      double flowMagnitude});
+      double flowMagnitude,
+      bool stationaryFlag});
 }
 
 /// @nodoc
@@ -401,6 +403,7 @@ class __$$LivenessPassImplCopyWithImpl<$Res>
     Object? flowVectors = null,
     Object? depthVariance = null,
     Object? flowMagnitude = null,
+    Object? stationaryFlag = null,
   }) {
     return _then(_$LivenessPassImpl(
       depthMap: null == depthMap
@@ -419,6 +422,10 @@ class __$$LivenessPassImplCopyWithImpl<$Res>
           ? _value.flowMagnitude
           : flowMagnitude // ignore: cast_nullable_to_non_nullable
               as double,
+      stationaryFlag: null == stationaryFlag
+          ? _value.stationaryFlag
+          : stationaryFlag // ignore: cast_nullable_to_non_nullable
+              as bool,
     ));
   }
 }
@@ -430,7 +437,8 @@ class _$LivenessPassImpl implements LivenessPass {
       {required this.depthMap,
       required final List<Float32List> flowVectors,
       required this.depthVariance,
-      required this.flowMagnitude})
+      required this.flowMagnitude,
+      this.stationaryFlag = false})
       : _flowVectors = flowVectors;
 
   @override
@@ -447,10 +455,13 @@ class _$LivenessPassImpl implements LivenessPass {
   final double depthVariance;
   @override
   final double flowMagnitude;
+  @override
+  @JsonKey()
+  final bool stationaryFlag;
 
   @override
   String toString() {
-    return 'LivenessResult.pass(depthMap: $depthMap, flowVectors: $flowVectors, depthVariance: $depthVariance, flowMagnitude: $flowMagnitude)';
+    return 'LivenessResult.pass(depthMap: $depthMap, flowVectors: $flowVectors, depthVariance: $depthVariance, flowMagnitude: $flowMagnitude, stationaryFlag: $stationaryFlag)';
   }
 
   @override
@@ -464,7 +475,9 @@ class _$LivenessPassImpl implements LivenessPass {
             (identical(other.depthVariance, depthVariance) ||
                 other.depthVariance == depthVariance) &&
             (identical(other.flowMagnitude, flowMagnitude) ||
-                other.flowMagnitude == flowMagnitude));
+                other.flowMagnitude == flowMagnitude) &&
+            (identical(other.stationaryFlag, stationaryFlag) ||
+                other.stationaryFlag == stationaryFlag));
   }
 
   @override
@@ -473,7 +486,8 @@ class _$LivenessPassImpl implements LivenessPass {
       const DeepCollectionEquality().hash(depthMap),
       const DeepCollectionEquality().hash(_flowVectors),
       depthVariance,
-      flowMagnitude);
+      flowMagnitude,
+      stationaryFlag);
 
   /// Create a copy of LivenessResult
   /// with the given fields replaced by the non-null parameter values.
@@ -490,36 +504,40 @@ class _$LivenessPassImpl implements LivenessPass {
             Float32List depthMap,
             List<Float32List> flowVectors,
             double depthVariance,
-            double flowMagnitude)
+            double flowMagnitude,
+            bool stationaryFlag)
         pass,
     required TResult Function(LivenessFailReason reason, String userMessage)
         fail,
   }) {
-    return pass(depthMap, flowVectors, depthVariance, flowMagnitude);
+    return pass(
+        depthMap, flowVectors, depthVariance, flowMagnitude, stationaryFlag);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(Float32List depthMap, List<Float32List> flowVectors,
-            double depthVariance, double flowMagnitude)?
+            double depthVariance, double flowMagnitude, bool stationaryFlag)?
         pass,
     TResult? Function(LivenessFailReason reason, String userMessage)? fail,
   }) {
-    return pass?.call(depthMap, flowVectors, depthVariance, flowMagnitude);
+    return pass?.call(
+        depthMap, flowVectors, depthVariance, flowMagnitude, stationaryFlag);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(Float32List depthMap, List<Float32List> flowVectors,
-            double depthVariance, double flowMagnitude)?
+            double depthVariance, double flowMagnitude, bool stationaryFlag)?
         pass,
     TResult Function(LivenessFailReason reason, String userMessage)? fail,
     required TResult orElse(),
   }) {
     if (pass != null) {
-      return pass(depthMap, flowVectors, depthVariance, flowMagnitude);
+      return pass(
+          depthMap, flowVectors, depthVariance, flowMagnitude, stationaryFlag);
     }
     return orElse();
   }
@@ -561,12 +579,14 @@ abstract class LivenessPass implements LivenessResult {
       {required final Float32List depthMap,
       required final List<Float32List> flowVectors,
       required final double depthVariance,
-      required final double flowMagnitude}) = _$LivenessPassImpl;
+      required final double flowMagnitude,
+      final bool stationaryFlag}) = _$LivenessPassImpl;
 
   Float32List get depthMap;
   List<Float32List> get flowVectors;
   double get depthVariance;
   double get flowMagnitude;
+  bool get stationaryFlag;
 
   /// Create a copy of LivenessResult
   /// with the given fields replaced by the non-null parameter values.
@@ -656,7 +676,8 @@ class _$LivenessFailImpl implements LivenessFail {
             Float32List depthMap,
             List<Float32List> flowVectors,
             double depthVariance,
-            double flowMagnitude)
+            double flowMagnitude,
+            bool stationaryFlag)
         pass,
     required TResult Function(LivenessFailReason reason, String userMessage)
         fail,
@@ -668,7 +689,7 @@ class _$LivenessFailImpl implements LivenessFail {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(Float32List depthMap, List<Float32List> flowVectors,
-            double depthVariance, double flowMagnitude)?
+            double depthVariance, double flowMagnitude, bool stationaryFlag)?
         pass,
     TResult? Function(LivenessFailReason reason, String userMessage)? fail,
   }) {
@@ -679,7 +700,7 @@ class _$LivenessFailImpl implements LivenessFail {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(Float32List depthMap, List<Float32List> flowVectors,
-            double depthVariance, double flowMagnitude)?
+            double depthVariance, double flowMagnitude, bool stationaryFlag)?
         pass,
     TResult Function(LivenessFailReason reason, String userMessage)? fail,
     required TResult orElse(),

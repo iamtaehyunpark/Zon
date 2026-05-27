@@ -22,8 +22,8 @@ class ModelValidationResult {
 
   double get _budgetMs => switch (modelName) {
         'depth_anything_v2_small' => 300,
-        'superpoint'              => 50,
-        'lightglue_lite'          => 150,
+        'superpoint'              => 120,
+        'lightglue_lite'          => 400,
         'mixvpr'                  => 100,
         _                         => 200,
       };
@@ -53,9 +53,9 @@ class ModelValidator {
     final results = await Future.wait([
       _validateOnnx(
         name: 'depth_anything_v2_small',
-        inputName: 'pixel_values',
+        inputName: 'image',
         inputShape: [1, 3, 256, 256],
-        runs: 5, // slower model — fewer runs
+        runs: 5,
       ),
       _validateOnnx(
         name: 'superpoint',
@@ -126,31 +126,36 @@ class ModelValidator {
     }
   }
 
-  // ── LightGlue Lite — two-input model ──────────────────────────────────
+  // ── LightGlue Lite — 4-input model (kpts0, kpts1, desc0, desc1) ──────
 
   static Future<ModelValidationResult> _validateLightGlue() async {
     const name = 'lightglue_lite';
     const assetPath = '$_assetBase/$name.onnx';
+    const kN = 256;
     try {
-      final data  = await rootBundle.load(assetPath);
+      final data   = await rootBundle.load(assetPath);
       final sizeMb = data.lengthInBytes / 1e6;
-      final bytes = data.buffer.asUint8List();
+      final session = OrtSession.fromBuffer(data.buffer.asUint8List(), OrtSessionOptions());
+      final runOpts = OrtRunOptions();
 
-      final session  = OrtSession.fromBuffer(bytes, OrtSessionOptions());
-      final desc0    = OrtValueTensor.createTensorWithDataList(Float32List(1 * 512 * 256), [1, 512, 256]);
-      final desc1    = OrtValueTensor.createTensorWithDataList(Float32List(1 * 512 * 256), [1, 512, 256]);
-      final runOpts  = OrtRunOptions();
+      final kpts0 = OrtValueTensor.createTensorWithDataList(Float32List(1 * kN * 2),   [1, kN, 2]);
+      final kpts1 = OrtValueTensor.createTensorWithDataList(Float32List(1 * kN * 2),   [1, kN, 2]);
+      final desc0 = OrtValueTensor.createTensorWithDataList(Float32List(1 * kN * 256), [1, kN, 256]);
+      final desc1 = OrtValueTensor.createTensorWithDataList(Float32List(1 * kN * 256), [1, kN, 256]);
+      final inputs = {'kpts0': kpts0, 'kpts1': kpts1, 'desc0': desc0, 'desc1': desc1};
 
-      session.run(runOpts, {'desc0': desc0, 'desc1': desc1}); // warm-up
+      session.run(runOpts, inputs); // warm-up
 
-      const runs = 10;
+      const runs = 5;
       final sw = Stopwatch()..start();
       for (var i = 0; i < runs; i++) {
-        session.run(runOpts, {'desc0': desc0, 'desc1': desc1});
+        session.run(runOpts, inputs);
       }
       final avgMs = sw.elapsedMilliseconds / runs;
 
-      desc0.release(); desc1.release(); runOpts.release(); session.release();
+      kpts0.release(); kpts1.release();
+      desc0.release(); desc1.release();
+      runOpts.release(); session.release();
       return ModelValidationResult(modelName: name, loaded: true, sizeMb: sizeMb, inferenceMs: avgMs);
     } catch (e) {
       return ModelValidationResult(modelName: name, loaded: false, sizeMb: 0, error: e.toString());

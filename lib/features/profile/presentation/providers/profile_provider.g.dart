@@ -6,7 +6,7 @@ part of 'profile_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$profileNotifierHash() => r'2ce75552d494cee54dcda3c741609d633ba1a8b1';
+String _$profileNotifierHash() => r'af4c84111628993bb15765ab6b84748db4337426';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,30 +30,30 @@ class _SystemHash {
 }
 
 abstract class _$ProfileNotifier
-    extends BuildlessAutoDisposeAsyncNotifier<ProfileEntity?> {
+    extends BuildlessAutoDisposeAsyncNotifier<ProfileData?> {
   late final String? userId;
 
-  FutureOr<ProfileEntity?> build(
+  FutureOr<ProfileData?> build(
     String? userId,
   );
 }
 
-/// Loads a user profile. Null userId = own profile (from auth session).
+/// Loads profile + recent stamps. Null userId = own profile.
 ///
 /// Copied from [ProfileNotifier].
 @ProviderFor(ProfileNotifier)
 const profileNotifierProvider = ProfileNotifierFamily();
 
-/// Loads a user profile. Null userId = own profile (from auth session).
+/// Loads profile + recent stamps. Null userId = own profile.
 ///
 /// Copied from [ProfileNotifier].
-class ProfileNotifierFamily extends Family<AsyncValue<ProfileEntity?>> {
-  /// Loads a user profile. Null userId = own profile (from auth session).
+class ProfileNotifierFamily extends Family<AsyncValue<ProfileData?>> {
+  /// Loads profile + recent stamps. Null userId = own profile.
   ///
   /// Copied from [ProfileNotifier].
   const ProfileNotifierFamily();
 
-  /// Loads a user profile. Null userId = own profile (from auth session).
+  /// Loads profile + recent stamps. Null userId = own profile.
   ///
   /// Copied from [ProfileNotifier].
   ProfileNotifierProvider call(
@@ -88,12 +88,12 @@ class ProfileNotifierFamily extends Family<AsyncValue<ProfileEntity?>> {
   String? get name => r'profileNotifierProvider';
 }
 
-/// Loads a user profile. Null userId = own profile (from auth session).
+/// Loads profile + recent stamps. Null userId = own profile.
 ///
 /// Copied from [ProfileNotifier].
 class ProfileNotifierProvider extends AutoDisposeAsyncNotifierProviderImpl<
-    ProfileNotifier, ProfileEntity?> {
-  /// Loads a user profile. Null userId = own profile (from auth session).
+    ProfileNotifier, ProfileData?> {
+  /// Loads profile + recent stamps. Null userId = own profile.
   ///
   /// Copied from [ProfileNotifier].
   ProfileNotifierProvider(
@@ -125,7 +125,7 @@ class ProfileNotifierProvider extends AutoDisposeAsyncNotifierProviderImpl<
   final String? userId;
 
   @override
-  FutureOr<ProfileEntity?> runNotifierBuild(
+  FutureOr<ProfileData?> runNotifierBuild(
     covariant ProfileNotifier notifier,
   ) {
     return notifier.build(
@@ -150,7 +150,7 @@ class ProfileNotifierProvider extends AutoDisposeAsyncNotifierProviderImpl<
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<ProfileNotifier, ProfileEntity?>
+  AutoDisposeAsyncNotifierProviderElement<ProfileNotifier, ProfileData?>
       createElement() {
     return _ProfileNotifierProviderElement(this);
   }
@@ -171,15 +171,14 @@ class ProfileNotifierProvider extends AutoDisposeAsyncNotifierProviderImpl<
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin ProfileNotifierRef
-    on AutoDisposeAsyncNotifierProviderRef<ProfileEntity?> {
+mixin ProfileNotifierRef on AutoDisposeAsyncNotifierProviderRef<ProfileData?> {
   /// The parameter `userId` of this provider.
   String? get userId;
 }
 
 class _ProfileNotifierProviderElement
     extends AutoDisposeAsyncNotifierProviderElement<ProfileNotifier,
-        ProfileEntity?> with ProfileNotifierRef {
+        ProfileData?> with ProfileNotifierRef {
   _ProfileNotifierProviderElement(super.provider);
 
   @override

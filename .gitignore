@@ -56,3 +56,4 @@ app.*.map.json
 # AI model binaries
 assets/models/*.tflite
 assets/models/*.onnx
+.agents/

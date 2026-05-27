@@ -14,20 +14,20 @@ ZON is a **Proof-of-Presence social platform**. Users verify they were physicall
 
 ## 2. Tech Stack (Non-Negotiable)
 
-| Layer | Choice | Notes |
-|---|---|---|
-| App | Flutter (Dart) | iOS first, Android Phase 2 |
-| State Management | Riverpod | Use `@riverpod` code generation |
-| Navigation | go_router | Declarative routing only |
-| Backend | Supabase | PostgreSQL + Auth + Storage + Realtime + Edge Functions |
-| Maps | Mapbox Flutter SDK | Full-screen overlay style (Snapchat-like) |
-| On-Device AI | TensorFlow Lite + ONNX Runtime Mobile | See `/lib/core/ai/` |
-| Local Storage | Hive | For cached place fingerprints and draft Stamps |
-| HTTP | Dio | With interceptors for auth tokens |
-| Image | flutter_image_compress + cached_network_image | |
-| Camera | camera plugin + custom AR overlay | |
-| Location | geolocator + geofence_service | |
-| Sensors | sensors_plus | IMU access |
+| Layer            | Choice                                        | Notes                                                   |
+| ---------------- | --------------------------------------------- | ------------------------------------------------------- |
+| App              | Flutter (Dart)                                | iOS first, Android Phase 2                              |
+| State Management | Riverpod                                      | Use `@riverpod` code generation                       |
+| Navigation       | go_router                                     | Declarative routing only                                |
+| Backend          | Supabase                                      | PostgreSQL + Auth + Storage + Realtime + Edge Functions |
+| Maps             | Mapbox Flutter SDK                            | Full-screen overlay style (Snapchat-like)               |
+| On-Device AI     | TensorFlow Lite + ONNX Runtime Mobile         | See `/lib/core/ai/`                                   |
+| Local Storage    | Hive                                          | For cached place fingerprints and draft Stamps          |
+| HTTP             | Dio                                           | With interceptors for auth tokens                       |
+| Image            | flutter_image_compress + cached_network_image |                                                         |
+| Camera           | camera plugin + custom AR overlay             |                                                         |
+| Location         | geolocator + geofence_service                 |                                                         |
+| Sensors          | sensors_plus                                  | IMU access                                              |
 
 **Never introduce new dependencies without updating `pubspec.yaml` and documenting in `docs/dependencies.md`.**
 
@@ -120,7 +120,9 @@ zon/
 ## 4. Architecture Rules
 
 ### 4.1 Feature Structure (Clean Architecture)
+
 Every feature follows this pattern:
+
 ```
 feature/
 ├── data/
@@ -137,17 +139,20 @@ feature/
 ```
 
 ### 4.2 State Management
+
 - **All state goes through Riverpod providers.** No setState() in screens except for purely local ephemeral UI (e.g., animation controller).
 - Use `AsyncNotifierProvider` for data that loads from Supabase.
 - Use `NotifierProvider` for synchronous state.
 - Provider files live in `features/<name>/presentation/providers/`.
 
 ### 4.3 Navigation
+
 - All routes defined in `lib/app.dart` using `go_router`.
 - Use named routes only. No `Navigator.push()` directly in widgets.
 - Pass only IDs between routes, never full objects.
 
 ### 4.4 Error Handling
+
 - All repository methods return `Either<AppException, T>` (using `fpdart`).
 - Never swallow exceptions silently.
 - UI shows error state, not crash.
@@ -157,11 +162,13 @@ feature/
 ## 5. AI Pipeline Rules
 
 ### 5.1 On-Device Only
+
 - **Images never leave the device.** The AI pipeline runs entirely on-device.
 - Only the signed verification result (score + hash + metadata) is sent to Supabase.
 - This is a privacy and legal requirement, not a preference.
 
 ### 5.2 Pipeline Phases
+
 ```
 Phase 1 (Liveness Gate) — runs LIVE during recording
   ├── Optical flow: detect flat image (parallax pattern check)
@@ -187,6 +194,7 @@ Final score: S = 0.25·E + 0.35·K + 0.25·D + 0.15·G
 ```
 
 ### 5.3 Model Files
+
 - All `.tflite` and `.onnx` model files go in `assets/models/`.
 - Models are loaded lazily (not at app start).
 - Total model size budget: **56MB**.
@@ -206,6 +214,7 @@ Final score: S = 0.25·E + 0.35·K + 0.25·D + 0.15·G
 ## 7. Coding Conventions
 
 ### Dart / Flutter
+
 ```dart
 // ✅ DO: Use Freezed for data classes
 @freezed
@@ -231,6 +240,7 @@ class StampError extends StampState { final String message; ... }
 ```
 
 ### File Naming
+
 - Files: `snake_case.dart`
 - Classes: `PascalCase`
 - Variables/methods: `camelCase`
@@ -238,6 +248,7 @@ class StampError extends StampState { final String message; ... }
 - Riverpod providers: `camelCaseProvider`
 
 ### Comments
+
 - Every public class and method needs a doc comment (`///`).
 - Explain **why**, not **what** the code does.
 - Mark unfinished sections with `// TODO(phase2):` or `// TODO(phase3):`.
@@ -247,6 +258,7 @@ class StampError extends StampState { final String message; ... }
 ## 8. MVP Scope (M0–M3 Only)
 
 **What IS in MVP:**
+
 - Liveness gate (Phase 1 full)
 - Route A authentication pipeline only
 - Stamp creation, feed, basic badge system
@@ -260,6 +272,7 @@ class StampError extends StampState { final String message; ... }
 - Privacy controls (visibility settings)
 
 **What is NOT in MVP (do not implement):**
+
 - Route B (outdoor natural) — Phase 2
 - Route C (indoor / Wi-Fi RSSI) — Phase 2
 - Friends / follow system — Phase 2
@@ -272,6 +285,7 @@ class StampError extends StampState { final String message; ... }
 - Any monetization features — Phase 4
 
 **If asked to implement a non-MVP feature, respond:**
+
 > "This is a Phase [N] feature. I'll add a TODO comment and skip implementation for now."
 
 ---
@@ -302,10 +316,11 @@ class StampError extends StampState { final String message; ... }
 Current phase: **M0 (Pre-development)**
 
 Update this section as phases progress:
-- [x] M0: Tech validation + schema + folder structure
-- [ ] M1: Auth pipeline + core AI
-- [ ] M2: Stamp + Feed + Map + Timeline + Profile
-- [ ] M3: Place registration + Account + App Store launch
+
+- [X] M0: Tech validation + schema + folder structure
+- [X] M1: Auth pipeline + core AI (CTA flow: place select → sweep → AI → stamp)
+- [X] M2: Stamp + Feed + Map + Timeline + Profile (screens wired to Supabase; auth gate bypassed for dev)
+- [X] M3: Place registration flow + Settings (profile edit, privacy, sign-out, delete account) + auth gate re-enabled for stamping flows + register-place edge function
 - [ ] M4–M6: Phase 2 features
 - [ ] M7–M9: Phase 3 features
 - [ ] M10–M12: Phase 4 features
@@ -314,13 +329,13 @@ Update this section as phases progress:
 
 ## 12. Quick Reference
 
-| Question | Answer |
-|---|---|
-| Where does business logic go? | `domain/usecases/` |
-| Where does Supabase code go? | `data/datasources/remote/` |
-| Where do AI models live? | `assets/models/` |
-| How do I add a new screen? | Add route in `app.dart` + create screen in `features/<name>/presentation/` |
-| How do I share state between features? | Riverpod provider in `lib/core/` or `lib/shared/` |
-| Where is the DB schema? | `docs/schema.sql` |
-| Can I send images to server? | **NO. Never.** |
-| Can I use setState()? | Only for purely local ephemeral UI (animations, text fields) |
+| Question                               | Answer                                                                         |
+| -------------------------------------- | ------------------------------------------------------------------------------ |
+| Where does business logic go?          | `domain/usecases/`                                                           |
+| Where does Supabase code go?           | `data/datasources/remote/`                                                   |
+| Where do AI models live?               | `assets/models/`                                                             |
+| How do I add a new screen?             | Add route in `app.dart` + create screen in `features/<name>/presentation/` |
+| How do I share state between features? | Riverpod provider in `lib/core/` or `lib/shared/`                          |
+| Where is the DB schema?                | `docs/schema.sql`                                                            |
+| Can I send images to server?           | They will be stored in the server for better model recognition later.          |
+| Can I use setState()?                  | Only for purely local ephemeral UI (animations, text fields)                   |
