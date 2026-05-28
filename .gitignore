@@ -59,3 +59,5 @@ assets/models/*.onnx
 .agents/
 scripts/
 scripts/LightGlue
+.claude/
+.claude/scheduled_tasks.lock
