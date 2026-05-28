@@ -58,3 +58,4 @@ assets/models/*.tflite
 assets/models/*.onnx
 .agents/
 scripts/
+scripts/LightGlue
