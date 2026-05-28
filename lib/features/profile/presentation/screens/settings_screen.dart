@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/auth/auth_service.dart';
 import '../../../../data/models/user_profile.dart';
 import '../providers/profile_provider.dart';
@@ -35,6 +36,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     _bioCtrl         = TextEditingController(text: p.bio ?? '');
     _usernameCtrl    = TextEditingController(text: p.username);
     _initialised = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) => _loadPrivacy());
+  }
+
+  Future<void> _loadPrivacy() async {
+    final uid = Supabase.instance.client.auth.currentUser?.id;
+    if (uid == null || !mounted) return;
+    final row = await Supabase.instance.client
+        .from('user_privacy')
+        .select('default_stamp_visibility')
+        .eq('user_id', uid)
+        .maybeSingle();
+    if (mounted && row != null) {
+      final v = row['default_stamp_visibility'] as String?;
+      if (v != null) setState(() => _visibility = v);
+    }
   }
 
   Future<void> _save() async {

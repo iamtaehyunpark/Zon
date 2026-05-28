@@ -232,7 +232,8 @@ class __$$PlaceImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _$PlaceImpl implements _Place {
   const _$PlaceImpl(
       {required this.id,

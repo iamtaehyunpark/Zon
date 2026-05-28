@@ -235,7 +235,8 @@ class __$$UserProfileImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _$UserProfileImpl implements _UserProfile {
   const _$UserProfileImpl(
       {required this.id,

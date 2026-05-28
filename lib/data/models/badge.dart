@@ -6,6 +6,7 @@ part 'badge.g.dart';
 
 @freezed
 class Badge with _$Badge {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory Badge({
     required String id,
     required String name,

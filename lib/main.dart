@@ -10,19 +10,18 @@ Future<void> main() async {
 
   await dotenv.load();
 
-  final supabaseUrl = dotenv.env['SUPABASE_URL'];
-  final supabaseKey = dotenv.env['SUPABASE_ANON_KEY'];
+  final supabaseUrl = dotenv.env['SUPABASE_URL'] ?? '';
+  final supabaseKey = dotenv.env['SUPABASE_ANON_KEY'] ?? '';
+  assert(supabaseUrl.isNotEmpty && supabaseKey.isNotEmpty,
+      'SUPABASE_URL and SUPABASE_ANON_KEY must be set in .env');
 
-  if (supabaseUrl != null && supabaseUrl.isNotEmpty &&
-      supabaseKey != null && supabaseKey.isNotEmpty) {
-    await Supabase.initialize(
-      url: supabaseUrl,
-      anonKey: supabaseKey,
-      authOptions: const FlutterAuthClientOptions(
-        authFlowType: AuthFlowType.pkce,
-      ),
-    );
-  }
+  await Supabase.initialize(
+    url: supabaseUrl,
+    anonKey: supabaseKey,
+    authOptions: const FlutterAuthClientOptions(
+      authFlowType: AuthFlowType.pkce,
+    ),
+  );
 
   final mapboxToken = dotenv.env['MAPBOX_ACCESS_TOKEN'] ?? '';
   if (mapboxToken.isNotEmpty) {

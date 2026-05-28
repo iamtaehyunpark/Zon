@@ -9,44 +9,44 @@ part of 'badge.dart';
 _$BadgeImpl _$$BadgeImplFromJson(Map<String, dynamic> json) => _$BadgeImpl(
       id: json['id'] as String,
       name: json['name'] as String,
-      badgeType: $enumDecode(_$BadgeTypeEnumMap, json['badgeType']),
+      badgeType: $enumDecode(_$BadgeTypeEnumMap, json['badge_type']),
       rarity: json['rarity'] as String,
       description: json['description'] as String?,
-      iconUrl: json['iconUrl'] as String?,
-      placeId: json['placeId'] as String?,
-      isLimited: json['isLimited'] as bool? ?? false,
-      availableFrom: json['availableFrom'] == null
+      iconUrl: json['icon_url'] as String?,
+      placeId: json['place_id'] as String?,
+      isLimited: json['is_limited'] as bool? ?? false,
+      availableFrom: json['available_from'] == null
           ? null
-          : DateTime.parse(json['availableFrom'] as String),
-      availableUntil: json['availableUntil'] == null
+          : DateTime.parse(json['available_from'] as String),
+      availableUntil: json['available_until'] == null
           ? null
-          : DateTime.parse(json['availableUntil'] as String),
-      earnedAt: json['earnedAt'] == null
+          : DateTime.parse(json['available_until'] as String),
+      earnedAt: json['earned_at'] == null
           ? null
-          : DateTime.parse(json['earnedAt'] as String),
-      isEarned: json['isEarned'] as bool? ?? false,
-      isBackfilled: json['isBackfilled'] as bool? ?? false,
+          : DateTime.parse(json['earned_at'] as String),
+      isEarned: json['is_earned'] as bool? ?? false,
+      isBackfilled: json['is_backfilled'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$$BadgeImplToJson(_$BadgeImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
-      'badgeType': _$BadgeTypeEnumMap[instance.badgeType]!,
+      'badge_type': _$BadgeTypeEnumMap[instance.badgeType]!,
       'rarity': instance.rarity,
       'description': instance.description,
-      'iconUrl': instance.iconUrl,
-      'placeId': instance.placeId,
-      'isLimited': instance.isLimited,
-      'availableFrom': instance.availableFrom?.toIso8601String(),
-      'availableUntil': instance.availableUntil?.toIso8601String(),
-      'earnedAt': instance.earnedAt?.toIso8601String(),
-      'isEarned': instance.isEarned,
-      'isBackfilled': instance.isBackfilled,
+      'icon_url': instance.iconUrl,
+      'place_id': instance.placeId,
+      'is_limited': instance.isLimited,
+      'available_from': instance.availableFrom?.toIso8601String(),
+      'available_until': instance.availableUntil?.toIso8601String(),
+      'earned_at': instance.earnedAt?.toIso8601String(),
+      'is_earned': instance.isEarned,
+      'is_backfilled': instance.isBackfilled,
     };
 
 const _$BadgeTypeEnumMap = {
-  BadgeType.placeSignature: 'placeSignature',
+  BadgeType.placeSignature: 'place_signature',
   BadgeType.seasonal: 'seasonal',
   BadgeType.pioneer: 'pioneer',
   BadgeType.founder: 'founder',

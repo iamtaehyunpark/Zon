@@ -7,6 +7,7 @@ part 'stamp.g.dart';
 
 @freezed
 class Stamp with _$Stamp {
+  @JsonSerializable(fieldRename: FieldRename.snake)
   const factory Stamp({
     required String id,
     required String userId,
@@ -21,6 +22,7 @@ class Stamp with _$Stamp {
     String? season,
     String? timeOfDay,
     double? visionScore,
+    double? sensorScore,
     double? finalScore,
     @Default(0) int likeCount,
     @Default(0) int commentCount,

@@ -103,7 +103,7 @@ class _AiProcessingScreenState extends State<AiProcessingScreen> {
       );
 
       if (!mounted) return;
-      context.pushReplacementNamed('stamp-complete', extra: verification);
+      context.pushReplacementNamed('record-edit', extra: verification);
     } catch (e) {
       _fail('Processing error: $e');
     }

@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../data/models/user_profile.dart';
+import '../../../../data/datasources/remote/stamp_select.dart';
 import '../../../feed/data/models/feed_item.dart';
 
 part 'profile_provider.g.dart';
@@ -18,10 +19,6 @@ class ProfileData {
 /// Loads profile + recent stamps. Null userId = own profile.
 @riverpod
 class ProfileNotifier extends _$ProfileNotifier {
-  static const _stampSelect =
-      'id, tier, caption, photo_urls, sensory_tags, like_count, comment_count, final_score, created_at, '
-      'places!place_id(id, name, category), '
-      'profiles!user_id(id, username, display_name, avatar_url)';
 
   @override
   Future<ProfileData?> build(String? userId) => _load();
@@ -44,7 +41,7 @@ class ProfileNotifier extends _$ProfileNotifier {
 
     final stamps = await Supabase.instance.client
         .from('stamps')
-        .select(_stampSelect)
+        .select(kStampSelect)
         .eq('user_id', targetId)
         .order('created_at', ascending: false)
         .limit(30) as List<dynamic>;

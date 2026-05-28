@@ -29,13 +29,16 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
 
   void _onScroll() {
     if (_scroll.position.pixels >= _scroll.position.maxScrollExtent - 300) {
-      ref.read(feedNotifierProvider.notifier).loadMore();
+      if (ref.read(feedHasMoreProvider)) {
+        ref.read(feedNotifierProvider.notifier).loadMore();
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final feed = ref.watch(feedNotifierProvider);
+    final hasMore = ref.watch(feedHasMoreProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFF0A0A0A),
@@ -74,7 +77,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
             child: ListView.builder(
               controller: _scroll,
               padding: const EdgeInsets.only(top: 8, bottom: 100),
-              itemCount: items.length + 1,
+              itemCount: items.length + (hasMore ? 1 : 0),
               itemBuilder: (context, i) {
                 if (i == items.length) {
                   return const Padding(

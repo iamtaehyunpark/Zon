@@ -12,6 +12,9 @@ include: package:flutter_lints/flutter.yaml
 analyzer:
   exclude:
     - zon-m0-w2/**
+  errors:
+    # Freezed: @JsonSerializable on factory constructors is documented and intentional.
+    invalid_annotation_target: ignore
 
 linter:
   # The lint rules applied to this project can be customized in the

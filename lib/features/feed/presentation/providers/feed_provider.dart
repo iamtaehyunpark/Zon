@@ -1,26 +1,31 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../data/models/feed_item.dart';
+import '../../../../data/datasources/remote/stamp_select.dart';
 
 part 'feed_provider.g.dart';
+
+/// Tracks whether more pages exist. Companion to [FeedNotifier].
+final feedHasMoreProvider = StateProvider<bool>((ref) => true);
 
 /// Loads and manages the paginated public feed of Stamps.
 @riverpod
 class FeedNotifier extends _$FeedNotifier {
   static const _pageSize = 20;
-  static const _select =
-      'id, tier, caption, photo_urls, sensory_tags, like_count, comment_count, final_score, created_at, '
-      'places!place_id(id, name, category), '
-      'profiles!user_id(id, username, display_name, avatar_url)';
+
+  bool _isLoadingMore = false;
 
   @override
-  Future<List<FeedItem>> build() => _fetch();
+  Future<List<FeedItem>> build() {
+    ref.read(feedHasMoreProvider.notifier).state = true;
+    return _fetch();
+  }
 
   Future<List<FeedItem>> _fetch({String? beforeCursor}) async {
-    // Build filter chain before applying order+limit (lt is a filter method)
     var q = Supabase.instance.client
         .from('stamps')
-        .select(_select)
+        .select(kStampSelect)
         .eq('visibility', 'public');
 
     if (beforeCursor != null) {
@@ -37,18 +42,31 @@ class FeedNotifier extends _$FeedNotifier {
 
   /// Pull-to-refresh: reload from top.
   Future<void> refresh() async {
+    ref.read(feedHasMoreProvider.notifier).state = true;
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(_fetch);
   }
 
   /// Append next page to existing list.
   Future<void> loadMore() async {
+    if (_isLoadingMore) return;
+    if (!ref.read(feedHasMoreProvider)) return;
     final current = state.valueOrNull;
     if (current == null || current.isEmpty) return;
-    final cursor = current.last.createdAt.toIso8601String();
-    final next = await _fetch(beforeCursor: cursor);
-    if (next.isNotEmpty) {
-      state = AsyncValue.data([...current, ...next]);
+
+    _isLoadingMore = true;
+    try {
+      final cursor = current.last.createdAt.toIso8601String();
+      final next = await _fetch(beforeCursor: cursor);
+
+      if (next.length < _pageSize) {
+        ref.read(feedHasMoreProvider.notifier).state = false;
+      }
+      if (next.isNotEmpty) {
+        state = AsyncValue.data([...current, ...next]);
+      }
+    } finally {
+      _isLoadingMore = false;
     }
   }
 }

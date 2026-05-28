@@ -28,7 +28,4 @@ class AuthService {
   static Future<void> signOut() async {
     await _client.auth.signOut();
   }
-
-  static User? get currentUser => _client.auth.currentUser;
-  static Session? get currentSession => _client.auth.currentSession;
 }

@@ -258,7 +258,8 @@ class __$$BadgeImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _$BadgeImpl implements _Badge {
   const _$BadgeImpl(
       {required this.id,

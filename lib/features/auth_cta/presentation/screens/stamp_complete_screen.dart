@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../core/ai/pipeline.dart';
+import '../../../../core/services/stamp_service.dart';
 import '../../../../data/models/auth_tier.dart';
-// ignore: unused_import
-import 'video_sweep_screen.dart';
+
+/// Passed via go_router `extra` to the stamp-complete route.
+class StampDraftArgs {
+  const StampDraftArgs({
+    required this.verification,
+    this.caption,
+    this.sensoryTags = const [],
+  });
+  final VerificationResult verification;
+  final String? caption;
+  final List<String> sensoryTags;
+}
 
 /// Final step — shows the verification result and creates the Stamp in Supabase.
 class StampCompleteScreen extends StatefulWidget {
-  const StampCompleteScreen({super.key, this.result});
-  final VerificationResult? result;
+  const StampCompleteScreen({super.key, this.args});
+  final StampDraftArgs? args;
 
   @override
   State<StampCompleteScreen> createState() => _StampCompleteScreenState();
@@ -28,37 +38,31 @@ class _StampCompleteScreenState extends State<StampCompleteScreen> {
   }
 
   Future<void> _save() async {
-    final result = widget.result
-        ?? ModalRoute.of(context)?.settings.arguments as VerificationResult?;
-    if (result == null) return;
-    setState(() { _result = result; _saving = true; });
+    final args = widget.args;
+    if (args == null) return;
+    setState(() { _result = args.verification; _saving = true; });
 
     try {
-      final userId = Supabase.instance.client.auth.currentUser?.id;
-      if (userId == null) throw Exception('Not signed in');
-
-      final tier = result.finalScore > 0.75
+      final tier = args.verification.finalScore > 0.75
           ? AuthTier.tier1
           : AuthTier.tier2;
 
-      await Supabase.instance.client.from('stamps').insert({
-        'user_id':          userId,
-        'place_id':         result.placeId,
-        'tier':             tier.name,
-        'visibility':       'public',
-        'vision_score':     result.scene.embeddingScore,
-        'sensor_score':     result.sensor.sensorScore,
-        'final_score':      result.finalScore,
-        'certificate_hash': result.certificateHash,
-      });
+      await StampService.createStamp(
+        placeId:         args.verification.placeId,
+        tier:            tier,
+        visionScore:     args.verification.scene.embeddingScore,
+        sensorScore:     args.verification.sensor.sensorScore,
+        finalScore:      args.verification.finalScore,
+        certificateHash: args.verification.certificateHash,
+        caption:         args.caption,
+        sensoryTags:     args.sensoryTags,
+      );
 
       if (mounted) setState(() { _saving = false; _saved = true; });
     } catch (e) {
       if (mounted) setState(() { _saving = false; _error = e.toString(); });
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +75,6 @@ class _StampCompleteScreenState extends State<StampCompleteScreen> {
     }
 
     final passed = result.passed;
-    final score  = result.finalScore;
 
     return Scaffold(
       backgroundColor: const Color(0xFF0A0A0A),
@@ -100,7 +103,7 @@ class _StampCompleteScreenState extends State<StampCompleteScreen> {
               const SizedBox(height: 24),
 
               Text(
-                passed ? 'Stamp Earned! 🎉' : 'Verification Pending',
+                passed ? 'Stamp Earned!' : 'Verification Pending',
                 style: const TextStyle(
                     color: Colors.white,
                     fontSize: 26,

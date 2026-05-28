@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../feed/data/models/feed_item.dart';
 import '../providers/timeline_provider.dart';
+import '../../../../shared/widgets/tier_badge.dart';
 
 /// Personal timeline — toggle between calendar grid and chronological list.
 class TimelineScreen extends ConsumerStatefulWidget {
@@ -317,35 +318,10 @@ class _StampRow extends StatelessWidget {
                         color: Colors.white38, fontSize: 11)),
               ]),
             ),
-            _TierBadge(tier: item.tier),
+            TierBadge(tier: item.tier),
           ]),
         ),
       );
-}
-
-class _TierBadge extends StatelessWidget {
-  const _TierBadge({required this.tier});
-  final String tier;
-
-  @override
-  Widget build(BuildContext context) {
-    final (label, color) = switch (tier) {
-      'tier1' => ('T1', const Color(0xFF1D9E75)),
-      'tier2' => ('T2', Colors.blueAccent),
-      _       => ('T3', Colors.orange),
-    };
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: color.withValues(alpha: 0.3)),
-      ),
-      child: Text(label,
-          style: TextStyle(
-              color: color, fontSize: 10, fontWeight: FontWeight.w700)),
-    );
-  }
 }
 
 class _SignInPrompt extends StatelessWidget {

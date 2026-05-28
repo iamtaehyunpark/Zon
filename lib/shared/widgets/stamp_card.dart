@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import '../../features/feed/data/models/feed_item.dart';
+import 'tier_badge.dart';
 
 /// Reusable card for a single Stamp in the feed or grid views.
 class StampCard extends StatelessWidget {
@@ -45,7 +46,7 @@ class StampCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis),
                   ]),
                 ),
-                _TierBadge(tier: item.tier),
+                TierBadge(tier: item.tier),
               ]),
             ),
 
@@ -163,27 +164,3 @@ class _Avatar extends StatelessWidget {
   }
 }
 
-class _TierBadge extends StatelessWidget {
-  const _TierBadge({required this.tier});
-  final String tier;
-
-  @override
-  Widget build(BuildContext context) {
-    final (label, color) = switch (tier) {
-      'tier1' => ('T1', const Color(0xFF1D9E75)),
-      'tier2' => ('T2', Colors.blueAccent),
-      _       => ('T3', Colors.orange),
-    };
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(color: color.withValues(alpha: 0.4)),
-      ),
-      child: Text(label,
-          style: TextStyle(
-              color: color, fontSize: 11, fontWeight: FontWeight.w700)),
-    );
-  }
-}

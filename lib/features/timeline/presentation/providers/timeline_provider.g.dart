@@ -6,7 +6,7 @@ part of 'timeline_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$timelineNotifierHash() => r'cba6d61de0cdc1f2a5a59a6e0806b46f46f20c2a';
+String _$timelineNotifierHash() => r'9847675e17c74c97c92a055e29fb6898bcbfa3c7';
 
 /// Loads the current user's stamps ordered by date, grouped by calendar day.
 ///

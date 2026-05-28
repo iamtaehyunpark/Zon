@@ -242,15 +242,14 @@ class _PlaceCard extends StatelessWidget {
         ),
       );
 
-  static IconData _iconFor(String cat) {
-    switch (cat.toLowerCase()) {
-      case 'cafe':    return Icons.coffee;
-      case 'park':    return Icons.park;
-      case 'museum':  return Icons.museum;
-      case 'restaurant': return Icons.restaurant;
-      default:        return Icons.place;
-    }
-  }
+  static IconData _iconFor(String cat) => switch (cat.toLowerCase()) {
+    'cafe'       => Icons.coffee,
+    'park'       => Icons.park,
+    'museum'     => Icons.museum,
+    'restaurant' => Icons.restaurant,
+    'landmark'   => Icons.account_balance,
+    _            => Icons.place,
+  };
 
   static String _distanceLabel(double? m) {
     if (m == null) return '';

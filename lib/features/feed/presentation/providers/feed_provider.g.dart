@@ -6,7 +6,7 @@ part of 'feed_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$feedNotifierHash() => r'ca81e9fe0afaad2c5fc04b6f5d80614a54109521';
+String _$feedNotifierHash() => r'83ef76c5d1fe31aa70e1b8b67967531fa14abf22';
 
 /// Loads and manages the paginated public feed of Stamps.
 ///

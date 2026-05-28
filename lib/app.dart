@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/ai/pipeline.dart';
@@ -30,10 +29,7 @@ GoRouter _buildRouter() => GoRouter(
             Supabase.instance.client.auth.currentUser != null;
         final path = state.uri.path;
 
-        // Send logged-in users away from the login screen
-        if (isLoggedIn && (path == '/login' || path == '/login-callback')) {
-          return '/feed';
-        }
+        if (isLoggedIn && path == '/login') return '/feed';
 
         // Only these flows require auth — browsing feed/map stays public
         const protectedPrefixes = ['/auth-cta', '/register-place'];
@@ -53,11 +49,6 @@ GoRouter _buildRouter() => GoRouter(
           path: '/login',
           name: 'login',
           builder: (_, __) => const LoginScreen(),
-        ),
-        GoRoute(
-          path: '/login-callback',
-          name: 'login-callback',
-          redirect: (_, __) => '/feed',
         ),
         ShellRoute(
           builder: (context, state, child) => MainShell(child: child),
@@ -109,13 +100,15 @@ GoRouter _buildRouter() => GoRouter(
             GoRoute(
               path: 'edit',
               name: 'record-edit',
-              builder: (_, __) => const RecordEditScreen(),
+              builder: (_, state) => RecordEditScreen(
+                verification: state.extra as VerificationResult?,
+              ),
             ),
             GoRoute(
               path: 'complete',
               name: 'stamp-complete',
               builder: (_, state) => StampCompleteScreen(
-                result: state.extra as VerificationResult?,
+                args: state.extra as StampDraftArgs?,
               ),
             ),
           ],
@@ -183,14 +176,14 @@ class _AuthListenable extends ChangeNotifier {
 }
 
 /// Root widget. Owns the GoRouter and MaterialApp theme.
-class ZonApp extends ConsumerStatefulWidget {
+class ZonApp extends StatefulWidget {
   const ZonApp({super.key});
 
   @override
-  ConsumerState<ZonApp> createState() => _ZonAppState();
+  State<ZonApp> createState() => _ZonAppState();
 }
 
-class _ZonAppState extends ConsumerState<ZonApp> {
+class _ZonAppState extends State<ZonApp> {
   late final GoRouter _router;
 
   @override

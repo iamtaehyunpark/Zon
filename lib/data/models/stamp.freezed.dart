@@ -33,6 +33,7 @@ mixin _$Stamp {
   String? get season => throw _privateConstructorUsedError;
   String? get timeOfDay => throw _privateConstructorUsedError;
   double? get visionScore => throw _privateConstructorUsedError;
+  double? get sensorScore => throw _privateConstructorUsedError;
   double? get finalScore => throw _privateConstructorUsedError;
   int get likeCount => throw _privateConstructorUsedError;
   int get commentCount => throw _privateConstructorUsedError;
@@ -67,6 +68,7 @@ abstract class $StampCopyWith<$Res> {
       String? season,
       String? timeOfDay,
       double? visionScore,
+      double? sensorScore,
       double? finalScore,
       int likeCount,
       int commentCount,
@@ -102,6 +104,7 @@ class _$StampCopyWithImpl<$Res, $Val extends Stamp>
     Object? season = freezed,
     Object? timeOfDay = freezed,
     Object? visionScore = freezed,
+    Object? sensorScore = freezed,
     Object? finalScore = freezed,
     Object? likeCount = null,
     Object? commentCount = null,
@@ -161,6 +164,10 @@ class _$StampCopyWithImpl<$Res, $Val extends Stamp>
           ? _value.visionScore
           : visionScore // ignore: cast_nullable_to_non_nullable
               as double?,
+      sensorScore: freezed == sensorScore
+          ? _value.sensorScore
+          : sensorScore // ignore: cast_nullable_to_non_nullable
+              as double?,
       finalScore: freezed == finalScore
           ? _value.finalScore
           : finalScore // ignore: cast_nullable_to_non_nullable
@@ -206,6 +213,7 @@ abstract class _$$StampImplCopyWith<$Res> implements $StampCopyWith<$Res> {
       String? season,
       String? timeOfDay,
       double? visionScore,
+      double? sensorScore,
       double? finalScore,
       int likeCount,
       int commentCount,
@@ -239,6 +247,7 @@ class __$$StampImplCopyWithImpl<$Res>
     Object? season = freezed,
     Object? timeOfDay = freezed,
     Object? visionScore = freezed,
+    Object? sensorScore = freezed,
     Object? finalScore = freezed,
     Object? likeCount = null,
     Object? commentCount = null,
@@ -298,6 +307,10 @@ class __$$StampImplCopyWithImpl<$Res>
           ? _value.visionScore
           : visionScore // ignore: cast_nullable_to_non_nullable
               as double?,
+      sensorScore: freezed == sensorScore
+          ? _value.sensorScore
+          : sensorScore // ignore: cast_nullable_to_non_nullable
+              as double?,
       finalScore: freezed == finalScore
           ? _value.finalScore
           : finalScore // ignore: cast_nullable_to_non_nullable
@@ -323,7 +336,8 @@ class __$$StampImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-@JsonSerializable()
+
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _$StampImpl implements _Stamp {
   const _$StampImpl(
       {required this.id,
@@ -339,6 +353,7 @@ class _$StampImpl implements _Stamp {
       this.season,
       this.timeOfDay,
       this.visionScore,
+      this.sensorScore,
       this.finalScore,
       this.likeCount = 0,
       this.commentCount = 0,
@@ -383,6 +398,8 @@ class _$StampImpl implements _Stamp {
   @override
   final double? visionScore;
   @override
+  final double? sensorScore;
+  @override
   final double? finalScore;
   @override
   @JsonKey()
@@ -399,7 +416,7 @@ class _$StampImpl implements _Stamp {
 
   @override
   String toString() {
-    return 'Stamp(id: $id, userId: $userId, placeId: $placeId, tier: $tier, createdAt: $createdAt, visibility: $visibility, caption: $caption, photoUrls: $photoUrls, audioUrl: $audioUrl, weather: $weather, season: $season, timeOfDay: $timeOfDay, visionScore: $visionScore, finalScore: $finalScore, likeCount: $likeCount, commentCount: $commentCount, isLiked: $isLiked, isSaved: $isSaved)';
+    return 'Stamp(id: $id, userId: $userId, placeId: $placeId, tier: $tier, createdAt: $createdAt, visibility: $visibility, caption: $caption, photoUrls: $photoUrls, audioUrl: $audioUrl, weather: $weather, season: $season, timeOfDay: $timeOfDay, visionScore: $visionScore, sensorScore: $sensorScore, finalScore: $finalScore, likeCount: $likeCount, commentCount: $commentCount, isLiked: $isLiked, isSaved: $isSaved)';
   }
 
   @override
@@ -426,6 +443,8 @@ class _$StampImpl implements _Stamp {
                 other.timeOfDay == timeOfDay) &&
             (identical(other.visionScore, visionScore) ||
                 other.visionScore == visionScore) &&
+            (identical(other.sensorScore, sensorScore) ||
+                other.sensorScore == sensorScore) &&
             (identical(other.finalScore, finalScore) ||
                 other.finalScore == finalScore) &&
             (identical(other.likeCount, likeCount) ||
@@ -438,26 +457,28 @@ class _$StampImpl implements _Stamp {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      userId,
-      placeId,
-      tier,
-      createdAt,
-      visibility,
-      caption,
-      const DeepCollectionEquality().hash(_photoUrls),
-      audioUrl,
-      weather,
-      season,
-      timeOfDay,
-      visionScore,
-      finalScore,
-      likeCount,
-      commentCount,
-      isLiked,
-      isSaved);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        id,
+        userId,
+        placeId,
+        tier,
+        createdAt,
+        visibility,
+        caption,
+        const DeepCollectionEquality().hash(_photoUrls),
+        audioUrl,
+        weather,
+        season,
+        timeOfDay,
+        visionScore,
+        sensorScore,
+        finalScore,
+        likeCount,
+        commentCount,
+        isLiked,
+        isSaved
+      ]);
 
   /// Create a copy of Stamp
   /// with the given fields replaced by the non-null parameter values.
@@ -490,6 +511,7 @@ abstract class _Stamp implements Stamp {
       final String? season,
       final String? timeOfDay,
       final double? visionScore,
+      final double? sensorScore,
       final double? finalScore,
       final int likeCount,
       final int commentCount,
@@ -524,6 +546,8 @@ abstract class _Stamp implements Stamp {
   String? get timeOfDay;
   @override
   double? get visionScore;
+  @override
+  double? get sensorScore;
   @override
   double? get finalScore;
   @override

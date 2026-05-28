@@ -7,7 +7,7 @@ part of 'place_register_provider.dart';
 // **************************************************************************
 
 String _$placeRegisterNotifierHash() =>
-    r'267b669f53185eb76cbcde463b7239496c519ae3';
+    r'dd71cf1d2cfbd9f7e287c14edc8042abac4bc9d6';
 
 /// See also [PlaceRegisterNotifier].
 @ProviderFor(PlaceRegisterNotifier)

@@ -47,10 +47,8 @@ class SettingsNotifier extends _$SettingsNotifier {
   Future<void> deleteAccount() async {
     state = true;
     try {
-      final uid = Supabase.instance.client.auth.currentUser?.id;
-      if (uid == null) throw Exception('Not signed in');
-      // Delete all user data via cascade (profile delete cascades stamps, badges, etc.)
-      await Supabase.instance.client.from('profiles').delete().eq('id', uid);
+      // Edge function deletes the auth user; cascades handle all data cleanup (GDPR).
+      await Supabase.instance.client.functions.invoke('delete-account');
       await Supabase.instance.client.auth.signOut();
     } finally {
       state = false;

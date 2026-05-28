@@ -70,14 +70,6 @@ class PlaceRegisterNotifier extends _$PlaceRegisterNotifier {
 
       final placeId = row['id'] as String;
 
-      // Create initial coverage row
-      await Supabase.instance.client.from('place_coverage').upsert({
-        'place_id':          placeId,
-        'total_submissions': 0,
-        'unique_submitters': 0,
-        'viewpoint_clusters': 0,
-      });
-
       state = state.copyWith(step: 3, submittedPlaceId: placeId);
     } catch (e) {
       state = state.copyWith(step: 1, error: e.toString());

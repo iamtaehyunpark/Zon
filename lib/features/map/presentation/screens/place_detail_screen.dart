@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../../../data/models/place_status.dart';
+import '../../../../shared/widgets/tier_badge.dart';
 
 /// Full-screen detail for a Place — shows stats, recent stamps, and verify CTA.
 class PlaceDetailScreen extends StatefulWidget {
@@ -177,7 +178,7 @@ class _PlaceDetailScreenState extends State<PlaceDetailScreen> {
                   child: Text(name,
                       style: const TextStyle(color: Colors.white70, fontSize: 13)),
                 ),
-                _TierLabel(tier: tier),
+                TierBadge(tier: tier),
                 const SizedBox(width: 8),
                 if (dt != null)
                   Text(_timeAgo(dt),
@@ -224,23 +225,6 @@ class _Stat extends StatelessWidget {
           ]),
         ),
       );
-}
-
-class _TierLabel extends StatelessWidget {
-  const _TierLabel({required this.tier});
-  final String tier;
-
-  @override
-  Widget build(BuildContext context) {
-    final (label, color) = switch (tier) {
-      'tier1' => ('T1', const Color(0xFF1D9E75)),
-      'tier2' => ('T2', Colors.blueAccent),
-      _       => ('T3', Colors.orange),
-    };
-    return Text(label,
-        style: TextStyle(
-            color: color, fontSize: 11, fontWeight: FontWeight.w700));
-  }
 }
 
 class _VerifyBar extends StatelessWidget {
